@@ -1,0 +1,22 @@
+# Local tools and credentials
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+Thumbs.db
+node_modules/
+.local/
+coverage/
+.dart_tool/
+build/
+**/android/local.properties
+**/android/key.properties
+*.jks
+*.keystore
+artifacts/
+dist/
+.secrets/
+google-services.json
+GoogleService-Info.plist
+*.local.json

@@ -1,0 +1,53 @@
+{
+  "name": "kwadra-backend-api",
+  "private": true,
+  "version": "0.6.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.16.0 <25"
+  },
+  "scripts": {
+    "dev": "tsx src/dev.ts",
+    "start": "tsx src/server.ts",
+    "db:migrate": "tsx src/cli.ts migrate",
+    "db:seed": "tsx src/cli.ts seed",
+    "db:inspect": "tsx src/cli.ts inspect",
+    "db:reset": "tsx src/cli.ts reset",
+    "jobs:run": "tsx src/cli.ts jobs",
+    "mail:inbox": "tsx src/cli.ts mail",
+    "admin:code": "tsx src/cli.ts admin-code",
+    "admin:enroll": "tsx src/cli.ts admin-enroll",
+    "qa:serve": "tsx scripts/browser-server.ts",
+    "qa:marketplace": "node scripts/mobile-marketplace-smoke.mjs",
+    "format": "prettier --write src test scripts ../apps/marketplace/public",
+    "check": "tsc --noEmit",
+    "test": "node scripts/run-tests.mjs",
+    "build": "tsc -p tsconfig.build.json",
+    "services:check": "tsx src/service-check.ts",
+    "deploy:prepare": "node scripts/prepare-deploy.mjs",
+    "db:upgrade-local": "tsx src/upgrade-local.ts"
+  },
+  "dependencies": {
+    "argon2": "0.45.1",
+    "express": "5.3.0",
+    "express-rate-limit": "8.7.1",
+    "google-auth-library": "11.3.1",
+    "helmet": "8.3.0",
+    "nodemailer": "10.1.2",
+    "pg": "8.23.1",
+    "sharp": "0.35.5",
+    "swagger-ui-express": "5.0.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.6",
+    "@types/node": "22.20.5",
+    "@types/nodemailer": "8.0.2",
+    "@types/pg": "8.23.1",
+    "@types/swagger-ui-express": "4.1.8",
+    "embedded-postgres": "18.4.0-beta.17",
+    "prettier": "3.9.10",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3"
+  }
+}

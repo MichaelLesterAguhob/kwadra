@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A little clarity for your properties. Manage your rentals, tenants, leases, and everyday tasks with Kwadra.">
+  <meta name="theme-color" content="#285c4d">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Kwadra">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png?v=2">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png?v=2"/>
+
+  <title>Kwadra · A little more home</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body { margin: 0; background: #f7f8fa; }
+    #loading { position: fixed; inset: 0; display: grid; place-content: center; text-align: center; font-family: system-ui, sans-serif; color: #285c4d; }
+    #loading img { width: 64px; height: 64px; margin: 0 auto 20px; border-radius: 18px; }
+    #loading strong { font-size: 32px; letter-spacing: -1.5px; }
+    #loading p { font-size: 12px; color: #7a8585; margin-top: 8px; }
+    #loading span { width: 100px; height: 3px; margin: 20px auto; border-radius: 3px; background: linear-gradient(90deg,#285c4d,#ddf3b4,#285c4d); background-size: 200%; animation: breathe 1.5s ease infinite; }
+    @keyframes breathe { to { background-position: 200%; } }
+    @media (prefers-reduced-motion: reduce) { #loading span { animation: none; } }
+  </style>
+</head>
+<body>
+  <div id="loading" role="status" aria-label="Opening Kwadra">
+    <img src="icons/Icon-192.png?v=2" alt="">
+    <strong>kwadra.</strong><p>A little more home.</p><span></span>
+  </div>
+  <script>
+    window.addEventListener('flutter-first-frame', function () {
+      document.getElementById('loading')?.remove();
+    });
+  </script>
+  <!--
+    You can customize the "flutter_bootstrap.js" script.
+    This is useful to provide a custom configuration to the Flutter loader
+    or to give the user feedback during the initialization process.
+
+    For more details:
+    * https://docs.flutter.dev/platform-integration/web/initialization
+  -->
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>

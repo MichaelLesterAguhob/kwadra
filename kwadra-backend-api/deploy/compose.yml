@@ -1,0 +1,81 @@
+name: kwadra
+services:
+  database:
+    image: postgres:18-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: kwadra
+      POSTGRES_USER: kwadra_migrate
+      POSTGRES_PASSWORD: ${MIGRATION_DB_PASSWORD:?Run prepare-deploy first}
+      KWADRA_APP_PASSWORD: ${RUNTIME_DB_PASSWORD:?Run prepare-deploy first}
+    volumes:
+      - database:/var/lib/postgresql
+      - ./init-runtime.sh:/docker-entrypoint-initdb.d/01-runtime.sh:ro
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U kwadra_migrate -d kwadra"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks: [data]
+  migrate:
+    build:
+      context: ../..
+      dockerfile: kwadra-backend-api/deploy/Dockerfile
+    image: kwadra-api:${APP_VERSION:-0.6.0}
+    command: [node, dist/deploy-migrate.js]
+    environment: &environment
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: "3000"
+      DATABASE_URL: ${MIGRATION_DATABASE_URL:?Run prepare-deploy first}
+      DATABASE_SSL: "false"
+      COOKIE_SECURE: "true"
+      PUBLIC_ORIGIN: https://${KWADRA_DOMAIN:?Set your domain}
+      CORS_ORIGINS: https://${KWADRA_DOMAIN:?Set your domain}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?Run prepare-deploy first}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+      GOOGLE_WEB_CLIENT_ID: ${GOOGLE_WEB_CLIENT_ID:-}
+      GOOGLE_IOS_CLIENT_ID: ${GOOGLE_IOS_CLIENT_ID:-}
+      EMAIL_DELIVERY_ENABLED: "false"
+    depends_on:
+      database: { condition: service_healthy }
+    networks: [data]
+  api:
+    image: kwadra-api:${APP_VERSION:-0.6.0}
+    restart: unless-stopped
+    environment:
+      <<: *environment
+      DATABASE_URL: ${DATABASE_URL:?Run prepare-deploy first}
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    networks: [data, edge]
+  proxy:
+    image: caddy:2
+    restart: unless-stopped
+    environment:
+      KWADRA_DOMAIN: ${KWADRA_DOMAIN:?Set your domain}
+      ACME_EMAIL: ${ACME_EMAIL:?Set the certificate contact email}
+    ports: ["80:80", "443:443", "443:443/udp"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - certificates:/data
+      - caddy_config:/config
+    depends_on:
+      api: { condition: service_healthy }
+    networks: [edge]
+volumes:
+  database:
+  certificates:
+  caddy_config:
+networks:
+  data:
+  edge:
